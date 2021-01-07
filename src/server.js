@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 const app = express();
 var morgan = require("morgan");
 const path = require("path");
@@ -14,6 +15,7 @@ mongoose
     useCreateIndex: true,
   })
   .then(() => console.log("mongoose conected..."));
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
@@ -21,10 +23,13 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 //routes
 const adminAuth = require("./Routes/Admin/auth");
 const categoryRoutes = require("./Routes/category");
-
+const productRoutes = require("./Routes/Product");
+//cors
+app.use(cors());
 //routes
 app.use("/api", adminAuth);
 app.use("/api", categoryRoutes);
+app.use("/api", productRoutes);
 app.use("/public", express.static(path.join(__dirname + "/uploads")));
 //404
 app.use((req, res, next) => {

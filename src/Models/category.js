@@ -9,7 +9,8 @@ const categorySchema = new mongoose.Schema(
     },
     slug: { type: String, required: true, unique: true },
     parentId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
     },
 
     categoryImg: {

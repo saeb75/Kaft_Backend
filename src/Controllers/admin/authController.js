@@ -38,7 +38,7 @@ exports.register = (req, res) => {
           rejectUnauthorized: false,
         },
       });
-      console.log(email);
+
       var mailOptions = {
         from: "saebfat@gmail.com",
         to: email,
@@ -94,7 +94,7 @@ exports.activateAccount = (req, res) => {
           if (user) {
             return res.json({
               success: true,
-              msg: "با موفقیت وارد سایت شدید",
+              msg: "ثبت نام شما با موفقیت انجام شد",
             });
           }
         });
