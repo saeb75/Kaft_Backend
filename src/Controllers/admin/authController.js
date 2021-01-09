@@ -112,15 +112,37 @@ exports.signin = (req, res) => {
         msg: "هیچ کاربری با این ایمیل وجود ندارد لطفا ثبت نام کنید",
       });
     if (user) {
-      const { _id, email, role, fullName } = user;
+      const { _id, email, role, fullName, firstName, lastName } = user;
       if (user.authenticate(req.body.password) && role == "admin") {
-        let token = jwt.sign({ _id, role }, process.env.LOGIN_JWT, {
-          expiresIn: "24h",
+        let token = jwt.sign(
+          { _id, role, email, firstName, lastName },
+          process.env.LOGIN_JWT,
+          {
+            expiresIn: "24h",
+          }
+        );
+        return res.json({
+          token,
+          user: { _id, email, firstName, lastName },
+          msg: "با موفقیت ثبت نام کردید",
         });
-        return res.json({ token, user, msg: "با موفقیت ثبت نام کردید" });
       } else {
         return res.json({ msg: "رمز و یا نام کاربری شما اشتباه است" });
       }
+    }
+  });
+};
+
+exports.deleteUser = (req, res) => {
+  const { id } = req.body;
+
+  User.findByIdAndDelete(id).exec((err, info) => {
+    if (err) return res.json(err);
+    if (info) {
+      return res.json({
+        success: true,
+        msg: "باموفقیت حذف شد",
+      });
     }
   });
 };

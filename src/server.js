@@ -22,6 +22,7 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 //routes
 const adminAuth = require("./Routes/Admin/auth");
+const auth = require("./Routes/auth");
 const categoryRoutes = require("./Routes/category");
 const productRoutes = require("./Routes/Product");
 //cors
@@ -30,6 +31,7 @@ app.use(cors());
 app.use("/api", adminAuth);
 app.use("/api", categoryRoutes);
 app.use("/api", productRoutes);
+app.use("/api", auth);
 app.use("/public", express.static(path.join(__dirname + "/uploads")));
 //404
 app.use((req, res, next) => {
