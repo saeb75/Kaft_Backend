@@ -2,17 +2,14 @@ const { json } = require("body-parser");
 const jwt = require("jsonwebtoken");
 
 exports.TokenControl = (req, res, next) => {
-  let token = req.headers.authorization;
-  if (token) {
-    try {
-      let user = jwt.verify(token, process.env.LOGIN_JWT);
-      req.user = user;
-      res.json("find");
-      next();
-    } catch (error) {
-      return res.json("not found token");
-    }
+  const token = req.headers.authorization.split(" ")[1];
+  if (req.headers.authorization) {
+    const token = req.headers.authorization.split(" ")[1];
+    const user = jwt.verify(token, process.env.LOGIN_JWT);
+    req.user = user;
   } else {
-    res.json("not found token");
+    return res.status(500).json({ message: "Authorization required" });
   }
+  next();
+  //jwt.decode()
 };

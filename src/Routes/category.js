@@ -15,6 +15,7 @@ var storage = multer.diskStorage({
     cb(null, shortid.generate() + "_" + file.originalname);
   },
 });
+
 const upload = multer({ storage });
 
 router.post("/category/addcategory", upload.single("categoryImg"), addCategory);

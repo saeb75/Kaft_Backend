@@ -5,6 +5,7 @@ const shortid = require("shortid");
 const User = require("../../Models/user");
 var nodemailer = require("nodemailer");
 const user = require("../../Models/user");
+const path = require("path");
 
 exports.register = (req, res) => {
   let { firstName, lastName, email, password, role } = req.body;
@@ -112,18 +113,26 @@ exports.signin = (req, res) => {
         msg: "هیچ کاربری با این ایمیل وجود ندارد لطفا ثبت نام کنید",
       });
     if (user) {
-      const { _id, email, role, fullName, firstName, lastName } = user;
+      const {
+        _id,
+        email,
+        role,
+        fullName,
+        firstName,
+        lastName,
+        profilePicture,
+      } = user;
       if (user.authenticate(req.body.password) && role == "admin") {
         let token = jwt.sign(
           { _id, role, email, firstName, lastName },
           process.env.LOGIN_JWT,
           {
-            expiresIn: "24h",
+            expiresIn: "10h",
           }
         );
         return res.json({
           token,
-          user: { _id, email, firstName, lastName },
+          user: { _id, email, firstName, lastName, profilePicture },
           msg: "با موفقیت ثبت نام کردید",
         });
       } else {
@@ -145,4 +154,28 @@ exports.deleteUser = (req, res) => {
       });
     }
   });
+};
+exports.updateUser = async (req, res) => {
+  const { firstName, lastName, role, _id } = req.body;
+  let newUpdate = { firstName, lastName, role };
+  let myprofilePicture = {};
+  if (req.file) {
+    newUpdate.profilePicture =
+      process.env.API_URL + "/public/" + req.file.filename;
+  }
+
+  let saeb = await User.findOneAndUpdate(
+    { _id },
+    { $set: newUpdate },
+    { upsert: true, new: true }
+  );
+  if (saeb) {
+    return res.json({
+      success: true,
+    });
+  } else {
+    return res.json({
+      success: false,
+    });
+  }
 };

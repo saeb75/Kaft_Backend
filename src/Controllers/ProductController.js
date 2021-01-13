@@ -2,9 +2,8 @@ const { default: slugify } = require("slugify");
 const Product = require("../Models/product");
 
 exports.addProduct = (req, res) => {
-  console.log(req.body.name);
   const { name, description, color, productDetails, category } = req.body;
-  console.log(req.body);
+
   let productObj = {
     name,
     slug: slugify(req.body.name),

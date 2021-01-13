@@ -2,7 +2,6 @@ const { default: slugify } = require("slugify");
 const category = require("../Models/category");
 
 exports.addCategory = async (req, res) => {
-  console.log(req.body.name);
   const categoryObj = {
     name: req.body.name,
     slug: slugify(req.body.slug),
