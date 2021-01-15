@@ -1,29 +1,60 @@
+const { json } = require("body-parser");
 const { default: slugify } = require("slugify");
 const category = require("../Models/category");
 
 exports.addCategory = async (req, res) => {
-  const categoryObj = {
-    name: req.body.name,
-    slug: slugify(req.body.slug),
-  };
+  const { _id, name, slug, parentId } = req.body;
 
-  if (req.body.parentId) {
-    categoryObj.parentId = req.body.parentId;
-  }
-  if (req.file) {
-    categoryObj.categoryImg = `${process.env.API_URL}/public/${req.file.filename}`;
+  let setUpdated = { name, slug };
+  let unSetUpdated = {};
+  if (parentId) {
+    setUpdated.parentId = parentId;
+  } else {
+    unSetUpdated.parentId = "";
   }
 
-  const mycategory = await new category(categoryObj);
-  mycategory.save((err, _category) => {
-    if (err) return res.json(err);
-    if (_category) {
-      res.json({
+  if (_id) {
+    let updatedCategory = await category.findByIdAndUpdate(
+      { _id },
+      {
+        $set: setUpdated,
+        $unset: unSetUpdated,
+      },
+      { new: true, upsert: true }
+    );
+    if (updatedCategory) {
+      return res.json({
         success: true,
-        _category,
+      });
+    } else {
+      return res.json({
+        success: false,
       });
     }
-  });
+  } else {
+    const categoryObj = {
+      name: req.body.name,
+      slug: slugify(req.body.slug),
+    };
+
+    if (req.body.parentId) {
+      categoryObj.parentId = req.body.parentId;
+    }
+    if (req.file) {
+      categoryObj.categoryImg = `${process.env.API_URL}/public/${req.file.filename}`;
+    }
+
+    const mycategory = await new category(categoryObj);
+    mycategory.save((err, _category) => {
+      if (err) return res.json(err);
+      if (_category) {
+        res.json({
+          success: true,
+          _category,
+        });
+      }
+    });
+  }
 };
 
 exports.getCategoreis = (req, res) => {
@@ -66,4 +97,31 @@ let getListOfCategories = (categories, parentId) => {
   }
 
   return categoryList;
+};
+
+exports.getListCategory = (req, res) => {
+  category
+    .find({})
+    .populate("parentId", "name")
+    .exec((err, Allcategory) => {
+      if (err) return res.status(400).json(err);
+      if (Allcategory) {
+        return res.json({
+          success: true,
+          categories: Allcategory,
+        });
+      }
+    });
+};
+
+exports.deleteCategory = (req, res) => {
+  const { _id } = req.body;
+  category.findByIdAndDelete({ _id }).exec((err, deleted) => {
+    if (err) return res.status(400).json({ success: false });
+    if (deleted) {
+      return res.json({
+        success: true,
+      });
+    }
+  });
 };

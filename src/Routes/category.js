@@ -6,7 +6,9 @@ const shortid = require("shortid");
 const {
   addCategory,
   getCategoreis,
+  getListCategory,
 } = require("../Controllers/CategoryController");
+const { TokenControl } = require("../Middelwares/AuthMiddelware");
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, path.join(path.dirname(__dirname)) + "/uploads");
@@ -18,10 +20,12 @@ var storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post("/category/addcategory", upload.single("categoryImg"), addCategory);
-router.get(
-  "/category/getcategories",
-
-  getCategoreis
+router.post(
+  "/category/addcategory",
+  TokenControl,
+  upload.single("categoryImg"),
+  addCategory
 );
+router.get("/category/getcategories", TokenControl, getCategoreis);
+router.post("/category/deletecategory", TokenControl, deleteCategory);
 module.exports = router;
