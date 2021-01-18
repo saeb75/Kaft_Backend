@@ -9,12 +9,13 @@ const ProductSchema = new mongoose.Schema(
     },
     slug: { type: String, required: true, unique: true },
 
-    color: {
+    /* color: {
       type: String,
-    },
+      required: true,
+    }, */
     productDetails: [
       {
-        productSize: { type: String },
+        size: { type: String },
         quantity: { type: String },
       },
     ],

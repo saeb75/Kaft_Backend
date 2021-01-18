@@ -124,15 +124,15 @@ exports.signin = (req, res) => {
       } = user;
       if (user.authenticate(req.body.password) && role == "admin") {
         let token = jwt.sign(
-          { _id, role, email, firstName, lastName },
+          { user: { _id, role, email, firstName, lastName, profilePicture } },
           process.env.LOGIN_JWT,
           {
-            expiresIn: "10h",
+            expiresIn: "24h",
           }
         );
         return res.json({
           token,
-          user: { _id, email, firstName, lastName, profilePicture },
+
           msg: "با موفقیت ثبت نام کردید",
         });
       } else {

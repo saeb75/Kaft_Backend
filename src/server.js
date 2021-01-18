@@ -5,7 +5,11 @@ const app = express();
 var morgan = require("morgan");
 const path = require("path");
 var bodyParser = require("body-parser");
+//cors
+app.use(cors());
+
 require("dotenv").config();
+
 app.use(morgan("dev"));
 mongoose
   .connect("mongodb://localhost:27017/kaft", {
@@ -25,8 +29,7 @@ const adminAuth = require("./Routes/Admin/auth");
 const auth = require("./Routes/auth");
 const categoryRoutes = require("./Routes/category");
 const productRoutes = require("./Routes/Product");
-//cors
-app.use(cors());
+
 //routes
 app.use("/api", adminAuth);
 app.use("/api", categoryRoutes);
