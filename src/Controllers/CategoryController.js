@@ -1,11 +1,12 @@
 const { json } = require("body-parser");
 const { default: slugify } = require("slugify");
 const category = require("../Models/category");
+const product = require("../Models/product");
 
 exports.addCategory = async (req, res) => {
-  const { _id, name, slug, parentId } = req.body;
+  const { _id, name, slug, parentId, categoryImg } = req.body;
 
-  let setUpdated = { name, slug };
+  let setUpdated = { name, slug, categoryImg };
   let unSetUpdated = {};
   if (parentId) {
     setUpdated.parentId = parentId;
@@ -35,13 +36,11 @@ exports.addCategory = async (req, res) => {
     const categoryObj = {
       name: req.body.name,
       slug: slugify(req.body.slug),
+      categoryImg,
     };
 
     if (req.body.parentId) {
       categoryObj.parentId = req.body.parentId;
-    }
-    if (req.file) {
-      categoryObj.categoryImg = `${process.env.API_URL}/public/${req.file.filename}`;
     }
 
     const mycategory = await new category(categoryObj);
@@ -61,6 +60,7 @@ exports.getCategoreis = (req, res) => {
   category
     .find({})
     .populate("parentId")
+    .populate("categoryImg")
     .exec(async (err, categories) => {
       if (err) return err;
       if (categories) {
@@ -75,7 +75,6 @@ exports.getCategoreis = (req, res) => {
 
 let getListOfCategories = (categories, parentId) => {
   const categoryList = [];
-
   let category;
   if (parentId == null) {
     category = categories.filter((cat) => cat.parentId == undefined);
@@ -90,6 +89,7 @@ let getListOfCategories = (categories, parentId) => {
       _id: cate._id,
       name: cate.name,
       slug: cate.slug,
+      categoryImg: cate.categoryImg,
       parentId: cate.parentId,
       type: cate.type,
       children: getListOfCategories(categories, cate._id),
@@ -103,6 +103,7 @@ exports.getListCategory = (req, res) => {
   category
     .find({})
     .populate("parentId", "name")
+    .populate("categoryImg")
     .exec((err, Allcategory) => {
       if (err) return res.status(400).json(err);
       if (Allcategory) {
@@ -121,6 +122,33 @@ exports.deleteCategory = (req, res) => {
     if (deleted) {
       return res.json({
         success: true,
+      });
+    }
+  });
+};
+exports.getBestCategories = (req, res) => {
+  product.find({}).exec((err, _product) => {
+    if (err) return res.status(400).json(err);
+    let categoryObj = {};
+    if (_product) {
+      _product.map((item) => {
+        categoryObj[item.category] =
+          categoryObj[item.category] + item.sold || item.sold;
+      });
+      const sortable = Object.entries(categoryObj).sort((a, b) => b[1] - a[1]);
+
+      let findArray = [];
+      sortable.slice(0, 6).map((item) => {
+        findArray.push({
+          _id: item[0],
+        });
+      });
+
+      category.find({ $or: findArray }).exec((err, _categories) => {
+        if (err) return res.status(400).json(err);
+        if (_categories) {
+          return res.status(200).json(_categories);
+        }
       });
     }
   });

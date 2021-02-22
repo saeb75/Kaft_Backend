@@ -8,6 +8,7 @@ const {
   getCategoreis,
   getListCategory,
   deleteCategory,
+  getBestCategories,
 } = require("../Controllers/CategoryController");
 const { TokenControl } = require("../Middelwares/AuthMiddelware");
 var storage = multer.diskStorage({
@@ -27,7 +28,8 @@ router.post(
   upload.single("categoryImg"),
   addCategory
 );
-router.get("/category/getcategories", TokenControl, getCategoreis);
-router.get("/category/listcategory", TokenControl, getListCategory);
+router.get("/category/getcategories", getCategoreis);
+router.get("/category/listcategory", getListCategory);
 router.post("/category/delete", TokenControl, deleteCategory);
+router.get("/category/get/best", getBestCategories);
 module.exports = router;

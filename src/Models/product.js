@@ -8,11 +8,11 @@ const ProductSchema = new mongoose.Schema(
       required: true,
     },
     slug: { type: String, required: true, unique: true },
-
-    /* color: {
-      type: String,
-      required: true,
-    }, */
+    price: { type: String, required: true },
+    color: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Color",
+    },
     productDetails: [
       {
         size: { type: String },
@@ -22,10 +22,14 @@ const ProductSchema = new mongoose.Schema(
     productImg: [
       {
         img: {
-          type: String,
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Image",
         },
       },
     ],
+    discount: {
+      type: String,
+    },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
@@ -39,6 +43,10 @@ const ProductSchema = new mongoose.Schema(
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+    },
+    sold: {
+      type: Number,
+      default: 0,
     },
     updatedAt: Date,
   },

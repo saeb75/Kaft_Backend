@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema(
       index: true,
       trim: true,
     },
+    gender: {
+      type: String,
+      required: true,
+    },
     hashed_password: {
       type: String,
       required: true,

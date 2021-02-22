@@ -5,14 +5,16 @@ const colorSchema = new mongoose.Schema(
     enName: {
       type: String,
       required: true,
+      unique: true,
     },
-    prName: { type: String, required: true },
-    colorCode: {
+    prName: { type: String, required: true, unique: true },
+    code: {
       type: String,
       required: true,
+      unique: true,
     },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose("Color", colorSchema);
+module.exports = mongoose.model("Color", colorSchema);

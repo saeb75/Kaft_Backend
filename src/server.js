@@ -29,12 +29,19 @@ const adminAuth = require("./Routes/Admin/auth");
 const auth = require("./Routes/auth");
 const categoryRoutes = require("./Routes/category");
 const productRoutes = require("./Routes/Product");
-
+const colorRoutes = require("./Routes/color");
+const imageRoutes = require("./Routes/image");
+const cartRoutes = require("./Routes/cart");
+const featureRoutes = require("./Routes/feature");
 //routes
 app.use("/api", adminAuth);
 app.use("/api", categoryRoutes);
 app.use("/api", productRoutes);
 app.use("/api", auth);
+app.use("/api", colorRoutes);
+app.use("/api", imageRoutes);
+app.use("/api", cartRoutes);
+app.use("/api", featureRoutes);
 app.use("/public", express.static(path.join(__dirname + "/uploads")));
 //404
 app.use((req, res, next) => {

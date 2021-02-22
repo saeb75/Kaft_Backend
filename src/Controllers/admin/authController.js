@@ -122,7 +122,7 @@ exports.signin = (req, res) => {
         lastName,
         profilePicture,
       } = user;
-      if (user.authenticate(req.body.password) && role == "admin") {
+      if (user.authenticate(req.body.password)) {
         let token = jwt.sign(
           { user: { _id, role, email, firstName, lastName, profilePicture } },
           process.env.LOGIN_JWT,
