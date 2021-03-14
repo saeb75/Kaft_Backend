@@ -33,6 +33,7 @@ const colorRoutes = require("./Routes/color");
 const imageRoutes = require("./Routes/image");
 const cartRoutes = require("./Routes/cart");
 const featureRoutes = require("./Routes/feature");
+const sliderRoutes = require("./Routes/slider");
 //routes
 app.use("/api", adminAuth);
 app.use("/api", categoryRoutes);
@@ -42,6 +43,7 @@ app.use("/api", colorRoutes);
 app.use("/api", imageRoutes);
 app.use("/api", cartRoutes);
 app.use("/api", featureRoutes);
+app.use("/api", sliderRoutes);
 app.use("/public", express.static(path.join(__dirname + "/uploads")));
 //404
 app.use((req, res, next) => {

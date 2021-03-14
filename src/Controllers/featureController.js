@@ -77,3 +77,24 @@ exports.removeProductFromDiscount = async (req, res) => {
       }
     });
 };
+
+exports.getDiscountList = (req, res) => {
+  let discount = "discount";
+  featured
+    .findOne({ name: discount })
+    .populate({
+      path: "products.product",
+      populate: {
+        path: "productImg.img",
+      },
+    })
+    .exec((err, list) => {
+      if (err) return res.status(400).json(err);
+      if (list) {
+        return res.json({
+          success: true,
+          list,
+        });
+      }
+    });
+};

@@ -18,15 +18,15 @@ exports.getUsers = (req, res) => {
 };
 
 exports.registerUser = (req, res) => {
-  let { firstName, lastName, email, password, gender } = req.body;
+  let { firstName, lastName, email, password } = req.body;
   let userObj = {
     firstName,
     lastName,
     email,
     password,
-    gender,
     role: "user",
   };
+  console.log(firstName, lastName, email, password);
 
   const error = validationResult(req);
   if (!error.isEmpty()) {

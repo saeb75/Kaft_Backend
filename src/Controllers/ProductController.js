@@ -92,7 +92,7 @@ exports.deleteProduct = (req, res) => {
 
 exports.getProductsByCategories = async (req, res) => {
   let { slug } = req.body;
-  console.log(req.body);
+
   let categoryId = await category.find({ slug }).select("_id");
   if (categoryId[0]) {
     let filterObj = {};
@@ -141,7 +141,6 @@ exports.getProductsDetails = async (req, res) => {
 
 exports.getProduct = (req, res) => {
   let { slug } = req.body;
-  console.log(slug);
   Product.find({ slug })
     .populate("color category productImg.img")
     .exec((err, product) => {
